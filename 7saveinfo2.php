@@ -6,10 +6,7 @@ if ($_SESSION["Status_Insert"]=="บันทึกสำเร็จ!"){
     session_destroy();
 
 }
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "cocoa_more";  
+include('./Processphp/config.php');
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
@@ -35,20 +32,29 @@ try {
             <div class="table_component" role="region" tabindex="0">
             <table>
                 <tbody>
-                <form action="Processphp/saveinfo.php" method='POST'>
+                <form action="Processphp/list_order_info.php" method='POST'>
                     <tr>
-                        <td><input class="date1" type="date" name="date2" required></td>
+                        <td><input class="date1" type="date" name="date2" value='<?php echo $_SESSION['DATE1']; ?>'></td>
                         <td>สถานะ
-                            <input class="status" type="radio" name="radiostatus" value="ทานที่ร้าน" required> ทานที่ร้าน
-                            <input class="status" type="radio" name="radiostatus" value="กลับบ้าน" required> กลับบ้าน</td>
+                            <?php if(@$_SESSION['RADIO'] == 'ทานที่ร้าน'){ ?>
+                                <input class="status" type="radio" checked name="radiostatus" value="ทานที่ร้าน"> ทานที่ร้าน
+                                <input class="status" type="radio" name="radiostatus" value="กลับบ้าน"> กลับบ้าน</td>
+                            <?php }else{ ?>
+                            <input class="status" type="radio" name="radiostatus" value="ทานที่ร้าน"> ทานที่ร้าน
+                            <input class="status" type="radio" checked name="radiostatus" value="กลับบ้าน"> กลับบ้าน</td>
+                            <?php } ?>
                     </tr>
                     <tr>
                         <td>เลขโต๊ะ
                             <select name="tablenum" id="">
+                                <?php if(!empty($_SESSION['TABLENUMBER'])){ ?>
+                                    <option value="<?=$_SESSION['TABLENUMBER'];?>"><?=$_SESSION['TABLENUMBER'];?></option>
+                                <?php }else{ ?>
                                 <option value="1">1</option><option value="2">2</option>
                                 <option value="3">3</option><option value="4">4</option>
                                 <option value="5">5</option><option value="6">6</option>
                                 <option value="7">7</option><option value="8">8</option>
+                                <?php } ?>
                             </select></td>
                         <td></td>
                     </tr>
@@ -75,11 +81,16 @@ try {
                             </select></td>
                         <td><input class="submit" type="submit" value="เพิ่มเมนู"></td>
                     </tr>
-                    <tr>
+                    </form>
+                    <form action="./Processphp/save_order.php" method="post">
+                        <tr>
+                            <input class="" type="hidden" name="date2" value='<?php echo $_SESSION['DATE1']; ?>'>
+                            <input class="" type="hidden" name="radio2" value='<?php echo $_SESSION['RADIO']; ?>'>
+                            <input class="" type="hidden" name="tablenumber2" value='<?php echo $_SESSION['TABLENUMBER']; ?>'>
                         
-                        <td><input class="submit" type="reset" value="ยกเลิก"></td>
-                        <td><input class="submit" type="submit" value="บันทึก"></td>
-                    </tr>
+                            <td><input class="submit" type="reset" value="ยกเลิก"></td>
+                            <td><input class="submit" type="submit" value="บันทึก"></td>
+                        </tr>
                     </form>
                 </tbody>
             </table>
@@ -94,8 +105,13 @@ try {
                 <tbody>
                 <?php
                 $number = 1;
-                foreach (@$_SESSION['CART'] as $key => $value) {
-                
+                $cart = @$_SESSION['CART']; 
+                if($cart == null){
+                   exit;
+                }else{
+
+                }
+                foreach ($cart as $key => $value) {
                     $menu = $value["menu"];
                     $qaun = $value["qaunt"];
                 ?>
@@ -112,6 +128,6 @@ try {
          
     </div>
     </div>
-    
+
 </body>
 </html> 

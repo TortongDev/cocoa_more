@@ -1,9 +1,6 @@
 <?php
 session_start();
-$servername = "localhost";
-$username = "root";
-$password = "4516000tor";
-$dbname = "cocoa_more";                                                                         
+include('./config.php');                                                                       
 
 // Create connection
 $conn = mysqli_connect($servername, $username, $password, $dbname);
